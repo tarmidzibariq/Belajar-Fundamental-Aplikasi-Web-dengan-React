@@ -1,3 +1,0 @@
-- [ ] Update NoteApp.jsx to add deleteNote function and pass onDelete prop to DetailPage
-- [ ] Convert DetailPage.jsx to functional component using hooks (useParams, useState, useEffect) to fetch note data
-- [ ] Test the DetailPage functionality
