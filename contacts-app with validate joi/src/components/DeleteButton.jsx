@@ -3,7 +3,7 @@ import React from 'react';
 import { validateProps }  from '../utils/validation.js';
 import { FiDelete } from 'react-icons/fi';
 const DeleteButtonSchema = Joi.object({
-  id: Joi.number().required(),
+  id: Joi.string().required(),
   onDelete: Joi.func().required(),
 });
 

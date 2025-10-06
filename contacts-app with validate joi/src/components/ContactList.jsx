@@ -6,7 +6,7 @@ import { validateProps }  from '../utils/validation.js';
 const ContactListSchema = Joi.object({
   contacts: Joi.array().items(
     Joi.object({
-      id: Joi.number().required(),
+      id: Joi.string().required(),
       name: Joi.string().required(),
       tag: Joi.string().required(),
       imageUrl: Joi.string().optional(),

@@ -1,20 +1,21 @@
 import React from "react";
 import ContactList from "../components/ContactList";
-import {getContacts, deleteContact} from "../utils/data";
+// import { getContacts, deleteContact} from "../utils/data";
 import SearchBar from "../components/SearchBar";
-import { useSearchParams } from 'react-router-dom';
-
+import {useSearchParams} from 'react-router-dom';
+import {getContacts, deleteContact} from "../utils/api";
 
 function HomePageWrapper() {
-    const [searchParams,setSearchParams] = useSearchParams();
+    const [searchParams,
+        setSearchParams] = useSearchParams();
 
     const keyword = searchParams.get('keyword');
 
-    function changeSearchParams(keyword){
+    function changeSearchParams(keyword) {
         setSearchParams({keyword});
     }
 
-    return <HomePage defaultKeyword={keyword} keywordChange={changeSearchParams} />;
+    return <HomePage defaultKeyword={keyword} keywordChange={changeSearchParams}/>;
 }
 
 class HomePage extends React.Component {
@@ -22,8 +23,8 @@ class HomePage extends React.Component {
         super(props);
 
         this.state = {
-            contacts: getContacts(),
-            keyword: props.defaultKeyword || '',
+            contacts: [],
+            keyword: props.defaultKeyword || ''
         }
         this.onDeleteHandler = this
             .onDeleteHandler
@@ -33,11 +34,13 @@ class HomePage extends React.Component {
             .bind(this);
     }
 
-    onDeleteHandler(id) {
-        deleteContact(id);
+    async onDeleteHandler(id) {
+        await deleteContact(id);
 
+        const {data} = await getContacts();
+        
         this.setState(() => {
-            return {contacts: getContacts()}
+            return {contacts: data}
         })
     }
     onKeywordChangeHandler(keyword) {
@@ -45,9 +48,18 @@ class HomePage extends React.Component {
             return {keyword}
         })
 
-        this.props.keywordChange(keyword);
+        this
+            .props
+            .keywordChange(keyword);
     }
 
+    async componentDidMount() {
+        const {data} = await getContacts();
+
+        this.setState(() => {
+            return {contacts: data};
+        });
+    }
     render() {
         const contacts = this
             .state

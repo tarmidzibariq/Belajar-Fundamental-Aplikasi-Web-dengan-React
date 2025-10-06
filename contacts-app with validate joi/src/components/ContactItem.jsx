@@ -9,7 +9,7 @@ const ContactItemSchema = Joi.object({
   imageUrl: Joi.string().optional(),
   name: Joi.string().required(),
   tag: Joi.string().required(),
-  id: Joi.number().required(),
+  id: Joi.string().required(),
   onDelete: Joi.func().required(),
 });
 
