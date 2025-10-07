@@ -24,7 +24,7 @@ function LoginPage({loginSuccess}) {
     )
 }
 
-LoginPage.PropTypes = {
+LoginPage.propTypes = {
     loginSuccess: PropTypes.func.isRequired
 }
 
