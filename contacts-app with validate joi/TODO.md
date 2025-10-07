@@ -1,0 +1,3 @@
+- [ ] Fix the LocaleContext provider tag in ContactApp.jsx (change <localeContext> to <LocaleContext>)
+- [ ] Rename toggleContext to toggleLocale in the localeContext state
+- [ ] Fix the toggle function to use prevState.localeContext.locale for comparison
