@@ -45,8 +45,6 @@ function HomePage(){
                         </div>
                     )
                 }
-
-
                 <div className="add-new-page__action">
                     <Link to="/notes/new" className="action"><FaPlus/></Link>
                 </div>
