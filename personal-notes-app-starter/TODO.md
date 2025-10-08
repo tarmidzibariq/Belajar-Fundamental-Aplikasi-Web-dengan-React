@@ -1,3 +1,3 @@
-- [x] Perbaiki RegisterInput.jsx: destructure prop register
-- [x] Perbaiki label htmlFor di RegisterInput.jsx
-- [x] Tambahkan confirm password di RegisterInput.jsx
+- [x] Fix import in Navigation.jsx: change "../contexts/themeContext" to "../contexts/ThemeContext"
+- [x] Fix theme condition in Navigation.jsx: change 'dark ' to 'dark'
+- [x] Fix import in NoteApp.jsx: change "../contexts/themeContext" to "../contexts/ThemeContext"
