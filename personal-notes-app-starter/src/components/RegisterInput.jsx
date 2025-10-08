@@ -25,14 +25,14 @@ function RegisterInput({ register }) {
 
     return (
         <form className="input-register" onSubmit={onSubmitHandler}>
-            <label htmlFor="name">Name</label>
-            <input type="text" value={name} onChange={handleNameChange} placeholder="Enter your name"/>
+            <label htmlFor="name">Nama</label>
+            <input type="text" value={name} onChange={handleNameChange} placeholder="Masukkan Nama"/>
             <label htmlFor="email">Email</label>
-            <input type="email" value={email} onChange={handleEmailChange} placeholder="Enter your email"/>
+            <input type="email" value={email} onChange={handleEmailChange} placeholder="Masukkan Email"/>
             <label htmlFor="password">Password</label>
-            <input type="password" value={password} onChange={handlePasswordChange} placeholder="Enter your password"/>
-            <label htmlFor="confirmPassword">Confirm Password</label>
-            <input type="password" value={confirmPassword} onChange={handleConfirmPasswordChange} placeholder="Confirm your password"/>
+            <input type="password" value={password} onChange={handlePasswordChange} placeholder="Masukkan Password"/>
+            <label htmlFor="confirmPassword">Konfirmasi Password</label>
+            <input type="password" value={confirmPassword} onChange={handleConfirmPasswordChange} placeholder="Konfirmasi Password"/>
             <button>Register</button>
         </form>
     );

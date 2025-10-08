@@ -6,33 +6,60 @@ import AddPage from "../pages/AddPage";
 import Navigation from "./Navigation";
 import NotFound from "../pages/NotFound";
 import ArchivesPage from "../pages/ArchivesPage";
-import { getUserLogged } from "../utils/network-data";
+import {getUserLogged, putAccessToken} from "../utils/network-data";
 import RegisterPage from "../pages/RegisterPage";
-
+import LoginPage from "../pages/LoginPage";
 
 function NoteApp() {
-    const [ authedUser, setAuthedUser] = React.useState(null);
- 
-    if(authedUser === null){
-        return(
+    const [authedUser, setAuthedUser] = React.useState(null);
+    const [ initializing, setInitializing ] = React.useState(true);
+    const checkLogin = async() => {
+        const {data} = await getUserLogged();
+        setAuthedUser(data);
+        setInitializing(false);
+    };
+
+    async function onLoginSuccess({accessToken}) {
+        putAccessToken(accessToken);
+        await checkLogin(); 
+    }
+
+    function onLogout(){
+        setAuthedUser(null);
+        putAccessToken('');
+    }
+
+    // Menggunakan useEffect untuk mengecek login saat aplikasi dimuat pertama kali
+    React.useEffect(() => {
+        checkLogin(); 
+
+    }, []);
+
+    if (initializing) {
+        return null;
+    }
+    if (authedUser === null) {
+        return (
             <div className="app-container">
                 <header>
-                    <Navigation/>
+                    <Navigation />
                 </header>
                 <main>
                     <Routes>
-                        <Route path='/*' element={<h1>Login</h1>}/>
-                        <Route path='/register' element={<RegisterPage/>}/>
+                        <Route
+                            path='/*'
+                            element={<LoginPage loginSuccess={onLoginSuccess} />} />
+                        <Route path='/register' element={<RegisterPage />}/>
                     </Routes>
                 </main>
             </div>
-            
+
         );
     }
     return (
         <div className="app-container">
             <header>
-                <Navigation/>
+                <Navigation logout={onLogout} name={authedUser.name}/>
             </header>
             <main>
                 <Routes>
