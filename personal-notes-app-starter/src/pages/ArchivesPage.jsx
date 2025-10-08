@@ -5,6 +5,7 @@ import {useSearchParams} from "react-router-dom";
 import SearchBar from "../components/SearchBar.jsx";
 import {Link} from "react-router-dom";
 import {FaPlus} from "react-icons/fa";
+import LocaleContext from "../contexts/LocaleContext.js";
 
 function ArchivesPage(){
     const [searchParams, setSearchParams] = useSearchParams();
@@ -12,10 +13,14 @@ function ArchivesPage(){
     const [keyword, setKeyword] = React.useState(() => {
         return searchParams.get('keyword') || ''
     });
+    const { locale} = React.useContext(LocaleContext);
+    const [loading, setLoading] = React.useState(true);
 
     React.useEffect(() => {
+        setLoading(true);
         getArchivedNotes().then(({data})  => {
             setNotes(data);
+            setLoading(false);
         })
     }, []);
 
@@ -28,9 +33,17 @@ function ArchivesPage(){
         return note.title.toLowerCase().includes(keyword.toLowerCase());
     });
 
+    if (loading) {
+        return (
+        <section className="detail-page">
+            <p>Loading...</p>
+        </section>
+        );
+    }
+
     return (
             <section>
-                <h2>Catatan Arsip</h2>
+                <h2>{locale === 'id' ? 'Catatan Arsip' : 'Archive Note'}</h2>
                 <SearchBar
                     keyword={keyword}
                     keywordChange={onKeywordChangeHandler}/>
@@ -39,7 +52,7 @@ function ArchivesPage(){
                         <NoteList notes={filteredNotes} />
                     ) : (
                         <div className="notes-list-empty">
-                        <p className="notes-empty-message">Tidak ada catatan</p>
+                        <p className="notes-empty-message">{locale === 'id' ? 'Tidak Ada Catatan' : 'No Notes'}</p>
                         </div>
                     )
                 }

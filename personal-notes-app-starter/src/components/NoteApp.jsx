@@ -10,6 +10,7 @@ import {getUserLogged, putAccessToken} from "../utils/network-data";
 import RegisterPage from "../pages/RegisterPage";
 import LoginPage from "../pages/LoginPage";
 import ThemeContext from "../contexts/themeContext";
+import LocaleContext from '../contexts/LocaleContext';
 
 function NoteApp() {
     const [authedUser, setAuthedUser] = React.useState(null);
@@ -17,6 +18,10 @@ function NoteApp() {
     const [theme, setTheme] = React.useState(() => {
         return localStorage.getItem('theme') || 'dark';
     });
+    const [locale, setLocale] = React.useState(() => {
+        return localStorage.getItem('locale') || 'id';
+    });
+    
     const checkLogin = async() => {
         const {data} = await getUserLogged();
         setAuthedUser(data);
@@ -38,16 +43,33 @@ function NoteApp() {
             return prevTheme === 'dark' ? 'light' : 'dark';
         });
     }
+    const toggleLocale = () => {
+        setLocale((prevLocale) => {
+            return prevLocale === 'id' ? 'en' : 'id';
+        });
+    }
 
     React.useEffect(() => {
         localStorage.setItem('theme', theme);
     }, [theme]);
+
+    React.useEffect(() => {
+        localStorage.setItem('locale', locale);
+    }, [locale]);
+    
     const themeContextValue = React.useMemo(() => {
         return {
             theme,
             toggleTheme
         }
-    });
+    }, [theme]);
+
+    const localeContextValue = React.useMemo(() => {
+        return {
+            locale,
+            toggleLocale
+        }
+    }, [locale]);
     
     // Menggunakan useEffect untuk mengecek login saat aplikasi dimuat pertama kali
     React.useEffect(() => {
@@ -59,40 +81,44 @@ function NoteApp() {
     }
     if (authedUser === null) {
         return (
+            <LocaleContext.Provider value={localeContextValue}>
+                <ThemeContext.Provider value={themeContextValue}>
+                    <div className="app-container" data-theme={theme}>
+                        <header>
+                            <Navigation />
+                        </header>
+                        <main>
+                            <Routes>
+                                <Route
+                                    path='/*'
+                                    element={<LoginPage loginSuccess={onLoginSuccess} />} />
+                                <Route path='/register' element={<RegisterPage />}/>
+                            </Routes>
+                        </main>
+                    </div>
+                </ThemeContext.Provider>
+            </LocaleContext.Provider>
+        );
+    }
+    return (
+        <LocaleContext.Provider value={localeContextValue}>
             <ThemeContext.Provider value={themeContextValue}>
                 <div className="app-container" data-theme={theme}>
                     <header>
-                        <Navigation />
+                        <Navigation logout={onLogout} name={authedUser.name}/>
                     </header>
                     <main>
                         <Routes>
-                            <Route
-                                path='/*'
-                                element={<LoginPage loginSuccess={onLoginSuccess} />} />
-                            <Route path='/register' element={<RegisterPage />}/>
+                            <Route path="/" element={< HomePage />}/>
+                            <Route path="/notes/:id" element={< DetailPage />}/>
+                            <Route path="/notes/new" element={< AddPage />}/>
+                            <Route path="/archives" element={< ArchivesPage />}/>
+                            <Route path="*" element={< NotFound />}/>
                         </Routes>
                     </main>
                 </div>
             </ThemeContext.Provider>
-        );
-    }
-    return (
-        <ThemeContext.Provider value={themeContextValue}>
-            <div className="app-container" data-theme={theme}>
-                <header>
-                    <Navigation logout={onLogout} name={authedUser.name}/>
-                </header>
-                <main>
-                    <Routes>
-                        <Route path="/" element={< HomePage />}/>
-                        <Route path="/notes/:id" element={< DetailPage />}/>
-                        <Route path="/notes/new" element={< AddPage />}/>
-                        <Route path="/archives" element={< ArchivesPage />}/>
-                        <Route path="*" element={< NotFound />}/>
-                    </Routes>
-                </main>
-            </div>
-        </ThemeContext.Provider>
+        </LocaleContext.Provider>
     );
 }
 

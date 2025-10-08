@@ -6,6 +6,7 @@ import {FaPlus} from "react-icons/fa";
 import SearchBar from "../components/SearchBar.jsx";
 import {useSearchParams} from "react-router-dom";
 import { getActiveNotes } from "../utils/network-data.js";
+import LocaleContext from "../contexts/LocaleContext.js";
 
 
 function HomePage(){
@@ -14,10 +15,14 @@ function HomePage(){
     const [keyword, setKeyword] = React.useState(() => {
         return searchParams.get('keyword') || ''
     });
+    const { locale} = React.useContext(LocaleContext);
+    const [loading, setLoading] = React.useState(true);
 
     React.useEffect(() => {
+        setLoading(true);
         getActiveNotes().then(({data})  => {
             setNotes(data);
+            setLoading(false);
         })
     }, []);
 
@@ -30,9 +35,17 @@ function HomePage(){
         return note.title.toLowerCase().includes(keyword.toLowerCase());
     });
 
+    if (loading) {
+        return (
+        <section className="detail-page">
+            <p>Loading...</p>
+        </section>
+        );
+    }
+
     return (
             <section>
-                <h2>Catatan Aktif</h2>
+                <h2>{locale === 'id' ? 'Catatan Aktif' : 'Active Note'}</h2>
                 <SearchBar
                     keyword={keyword}
                     keywordChange={onKeywordChangeHandler}/>
@@ -41,7 +54,7 @@ function HomePage(){
                         <NoteList notes={filteredNotes} />
                     ) : (
                         <div className="notes-list-empty">
-                        <p className="notes-empty-message">Tidak ada catatan</p>
+                        <p className="notes-empty-message">{locale === 'id' ? 'Tidak Ada Catatan' : 'No Notes'}</p>
                         </div>
                     )
                 }
